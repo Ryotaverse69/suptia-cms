@@ -11,8 +11,11 @@
   "dependencies": {
     "@gsap/react": "^2.1.1",
     "@portabletext/react": "^3.2.1",
+    "gsap": "^3.12.5",
+    "next": "^15.4.2",
     "next-sanity": "^10.0.1",
-    "next": "^15.4.2"
+    "react": "^18",
+    "react-dom": "^18"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
