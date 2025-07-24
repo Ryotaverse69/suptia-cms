@@ -59,7 +59,7 @@ interface Article {
   _updatedAt: string;
 }
 
-export default async function ArticlePage({ params }: any) {
+export default async function ArticlePage({ params }: { params: { slug: string } }) {
   const query = `*[_type == "ingredientGuide" && slug.current == $slug][0]{
     title,
     body,
