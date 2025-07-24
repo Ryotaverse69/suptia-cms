@@ -1,4 +1,3 @@
-
 import { client } from "@/lib/sanity.client";
 import { PortableText } from "@portabletext/react";
 import { Metadata, ResolvingMetadata } from 'next';
@@ -11,6 +10,13 @@ const JsonLd = ({ data }: any) => (
   />
 );
 
+// PagePropsの型定義を追加
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
 // 静的パスを生成
 export async function generateStaticParams() {
   const paths = await client.fetch(`*[_type == "ingredientGuide"]{"slug": slug.current}`);
@@ -19,7 +25,7 @@ export async function generateStaticParams() {
 
 // メタデータを動的に生成
 export async function generateMetadata(
-  { params }: { params: { slug: string } },
+  { params }: PageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const query = `*[_type == "ingredientGuide" && slug.current == $slug][0]{
@@ -59,7 +65,7 @@ interface Article {
   _updatedAt: string;
 }
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
+export default async function ArticlePage({ params }: PageProps) {
   const query = `*[_type == "ingredientGuide" && slug.current == $slug][0]{
     title,
     body,
