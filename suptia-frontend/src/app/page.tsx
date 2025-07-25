@@ -1,49 +1,40 @@
-"use client";
+// src/app/page.tsx
 
-import Head from 'next/head';
-import { motion } from 'framer-motion'; // アニメーション用
+// Sanity clientのインポートパスはご自身の環境に合わせてください
+import { client } from '@/lib/sanity.client';
+import Link from 'next/link';
 
-export default function Home({ articles }) {
+// Sanityから記事データを取得する非同期関数
+async function getArticles() {
+  // ingredientGuideタイプの全ドCュメントを取得するクエリ
+  const query = `*[_type == "ingredientGuide"] | order(_createdAt desc) {
+    _id,
+    title,
+    "slug": slug.current
+  }`;
+  const articles = await client.fetch(query);
+  return articles;
+}
+
+// ページコンポーネント (これが default export)
+export default async function HomePage() {
+  // ページコンポーネント内で直接データを取得
+  const articles = await getArticles();
+
+  // 取得したデータを使ってJSXを返す
   return (
-    <>
-      <Head>
-        <title>サプティア (SUPTIA) - 最適なサプリメント</title>
-        <meta name="description" content="誰もが自分にピッタリの安くて安全なサプリメントに出会える。" />
-      </Head>
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white text-black p-4">
-        <motion.h1 
-          className="text-4xl font-bold mb-4"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          誰もが自分にピッタリの安くて安全なサプリメントに出会える。
-        </motion.h1>
-        <motion.input 
-          type="text" 
-          placeholder="成分を検索..." 
-          className="w-full max-w-md p-2 border border-gray-300 rounded mb-4"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        />
-        <motion.div 
-          className="w-full max-w-md"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-        >
-          <iframe
-            src="https://docs.google.com/forms/d/e/your-form-id/viewform?embedded=true"
-            width="100%"
-            height="500"
-            frameBorder="0"
-            marginHeight="0"
-            marginWidth="0"
-          >読み込み中...</iframe>
-        </motion.div>
-        {/* 記事リストなどの既存コンテンツ */}
-      </div>
-    </>
+    <div>
+      <h1>記事一覧</h1>
+      <ul>
+        {/* Sanityから渡される型が不明なため、一時的にanyを使います */}
+        {articles.map((article: any) => (
+          <li key={article._id}>
+            <Link href={`/articles/${article.slug}`}>
+              {article.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
