@@ -1,4 +1,6 @@
-// app/page.tsx (App Router使用)
+// app/page.tsx
+'use client'; // これを追加: クライアントコンポーネント指定
+
 import { motion } from 'framer-motion';
 import Head from 'next/head';
 
@@ -8,8 +10,8 @@ export default function Home() {
       <Head>
         <title>サプティア (SUPTIA)</title>
         <meta name="description" content="誰もが自分にピッタリの安くて安全なサプリメントに出会える。" />
-        <meta name="keywords" content="サプリメント, サプリ, 健康, AI検索, 価格比較, 安いサプリ, 安全サプリ" /> {/* SEO/LLMO対策: キーワード追加 */}
-        <meta property="og:title" content="サプティア (SUPTIA)" /> {/* OpenGraph for SNS */}
+        <meta name="keywords" content="サプリメント, サプリ, 健康, AI検索, 価格比較, 安いサプリ, 安全サプリ" /> {/* SEO/LLMO対策 */}
+        <meta property="og:title" content="サプティア (SUPTIA)" />
         <meta property="og:description" content="誰もが自分にピッタリの安くて安全なサプリメントに出会える。" />
       </Head>
 
