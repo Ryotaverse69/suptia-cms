@@ -1,94 +1,94 @@
-// app/page.tsx
-'use client'; // クライアントコンポーネント指定（エラー回避）
+'use client'; // クライアント指定（Framer Motion用）
 
 import { motion } from 'framer-motion';
 import Head from 'next/head';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 text-black flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-white text-black font-sans antialiased">
       <Head>
         <title>サプティア (SUPTIA)</title>
         <meta name="description" content="誰もが自分にピッタリの安くて安全なサプリメントに出会える。" />
-        <meta name="keywords" content="サプリメント, サプリ, 健康, AI検索, 価格比較, 安いサプリ, 安全サプリ" />
-        <meta property="og:title" content="サプティア (SUPTIA)" />
-        <meta property="og:description" content="誰もが自分にピッタリの安くて安全なサプリメントに出会える。" />
-        <meta property="og:url" content="https://www.suptia.com" />
+        <meta name="keywords" content="サプリメント, 健康, AI検索, 価格比較" />
       </Head>
 
-      {/* ヘッダー */}
-      <header className="w-full py-8 text-center">
-        <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          className="text-5xl font-bold tracking-wide sm:text-6xl"
-        >
-          サプティア (SUPTIA)
-        </motion.h1>
+      {/* ヘッダー: xAI風ロゴ/ナビ */}
+      <header className="fixed top-0 w-full bg-white/75 backdrop-blur py-4 px-6 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">サプティア (SUPTIA)</h1>
+        <nav className="space-x-4">
+          <a href="#guide" className="text-gray-600 hover:text-black">成分ガイド</a>
+          <a href="#news" className="text-gray-600 hover:text-black">ニュース</a>
+          <a href="#contact" className="text-gray-600 hover:text-black">お問い合わせ</a>
+        </nav>
       </header>
 
-      {/* メイン */}
-      <motion.main
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
-        className="flex flex-col items-center text-center max-w-2xl"
-      >
-        <p className="text-xl mb-10 leading-relaxed sm:text-2xl">
+      {/* ヒーロー: xAI風コンセプト/検索窓、白系背景 */}
+      <section className="h-screen flex flex-col justify-center items-center bg-gray-50 px-6 text-center">
+        <motion.h2
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-4xl md:text-6xl font-light mb-8"
+        >
           誰もが自分にピッタリの安くて安全なサプリメントに出会える。
-        </p>
-
-        {/* 検索窓 */}
+        </motion.h2>
         <form className="w-full max-w-md">
           <input
             type="text"
-            placeholder="サプリメントを検索（例: ビタミンC, オメガ3）"
-            className="w-full p-4 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
+            placeholder="サプリメントを検索（例: ビタミンC）"
+            className="w-full p-4 border border-gray-300 rounded-full focus:outline-none"
           />
           <motion.button
             type="submit"
             whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="mt-4 px-8 py-3 bg-blue-500 text-white rounded-full font-semibold"
+            className="mt-4 px-8 py-3 bg-blue-500 text-white rounded-full"
           >
             検索
           </motion.button>
         </form>
+      </section>
 
-        {/* アンケートCTA */}
-        <motion.a
-          href="https://forms.gle/your-google-form-link" // Google Formsリンクを挿入
-          target="_blank"
-          rel="noopener noreferrer"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1 }}
-          className="mt-6 px-6 py-2 bg-blue-100 text-blue-700 rounded-full"
-        >
-          ご意見をお聞かせください
-        </motion.a>
-      </motion.main>
+      {/* 製品セクション: xAIのProducts風、成分ガイド */}
+      <section id="guide" className="py-16 px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl mb-8">成分ガイド</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Sanityから動的取得想定 */}
+            <div className="p-6 border border-gray-200 rounded-lg">
+              <h3 className="text-xl">ビタミンC</h3>
+              <p className="text-gray-600">効果と選び方。</p>
+            </div>
+            {/* 追加カード */}
+          </div>
+        </div>
+      </section>
 
-      {/* 成分ガイド */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-        className="mt-12 text-center max-w-2xl"
-      >
-        <h2 className="text-2xl mb-4 font-semibold">成分ガイド</h2>
-        <ul className="list-none space-y-2">
-          <li><a href="/articles/vitamin-c" className="text-blue-500 hover:underline">ビタミンCの効果と選び方</a></li>
-          <li><a href="/articles/omega-3" className="text-blue-500 hover:underline">オメガ3の健康効果</a></li>
-          {/* Sanityから動的取得推奨 */}
-        </ul>
-      </motion.section>
+      {/* ミッションセクション: xAIのUnderstand風 */}
+      <section className="py-32 bg-gray-50 text-center">
+        <h2 className="text-5xl font-light">最適なサプリを見つけよう</h2>
+      </section>
 
-      {/* フッター */}
-      <footer className="w-full py-6 mt-auto text-center text-sm text-gray-500">
-        © 2025 サプティア. All rights reserved. | <a href="/privacy" className="hover:underline">プライバシーポリシー</a>
+      {/* ニュース: xAIのBlog風 */}
+      <section id="news" className="py-16 px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl mb-8">最新ニュース</h2>
+          <div className="space-y-8">
+            {/* 例 */}
+            <div className="border-b pb-4">
+              <h3 className="text-xl">新機能リリース</h3>
+              <p className="text-gray-600">2025-07-26</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* フッター: xAI風リンク集 */}
+      <footer className="py-8 px-6 bg-gray-50 text-center text-gray-600">
+        <p>© 2025 サプティア. All rights reserved.</p>
+        <div className="space-x-4 mt-4">
+          <a href="/privacy">プライバシーポリシー</a>
+          <a href="/terms">利用規約</a>
+        </div>
       </footer>
     </div>
   );
