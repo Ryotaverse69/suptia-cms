@@ -2,8 +2,30 @@
 
 import { motion } from 'framer-motion';
 import Head from 'next/head';
+import { useState } from 'react';
+
+interface SearchResult {
+  nutrients: {
+    nf_vitamin_c?: number;
+  };
+  recommendation: string;
+}
 
 export default function Home() {
+  const [query, setQuery] = useState('');
+  const [result, setResult] = useState<SearchResult | null>(null);
+
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const res = await fetch('/api/recommend', { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query })
+    });
+    const data = await res.json();
+    setResult(data); // 結果表示
+  };
+
   return (
     <div className="min-h-screen bg-white text-black font-sans antialiased">
       <Head>
@@ -32,11 +54,13 @@ export default function Home() {
         >
           誰もが自分にピッタリの安くて安全なサプリメントに出会える。
         </motion.h2>
-        <form className="w-full max-w-md">
+        <form onSubmit={handleSearch} className="w-full max-w-md">
           <input
             type="text"
             placeholder="サプリメントを検索（例: ビタミンC）"
             className="w-full p-4 border border-gray-300 rounded-full focus:outline-none"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
           />
           <motion.button
             type="submit"
@@ -46,6 +70,13 @@ export default function Home() {
             検索
           </motion.button>
         </form>
+
+        {result && (
+          <div className="mt-8 p-4 bg-white border rounded-lg w-full max-w-md text-left">
+            <h3 className="font-bold">栄養データ: {result.nutrients?.nf_vitamin_c}mg ビタミンC</h3>
+            <p><span className="font-bold">AI提案:</span> {result.recommendation}</p>
+          </div>
+        )}
       </section>
 
       {/* 製品セクション: xAIのProducts風、成分ガイド */}
