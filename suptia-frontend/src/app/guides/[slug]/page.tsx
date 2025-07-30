@@ -1,5 +1,5 @@
 // app/guides/[slug]/page.tsx
-import { client } from '../../lib/sanity.client';
+import { client } from '../../../lib/sanity.client';
 import { PortableText } from '@portabletext/react';  // 本文表示用
 
 export async function generateStaticParams() {

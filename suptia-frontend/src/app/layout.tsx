@@ -8,6 +8,7 @@ import Script from 'next/script';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://suptia.com"),
   title: "Suptia - あなたにピッタリのサプリメントを見つけよう",
   description: "誰もが自分にピッタリの安くて安全なサプリメントに出会えるように、サプリメントの成分に関する情報を提供します。",
   openGraph: {
