@@ -7,7 +7,7 @@ import Hero from '../components/home/Hero';
 // 「Ingredient Guide」フォルダ内の記事を取得する関数
 async function getIngredientGuides() {
   // スキーマに合わせて調整（例: _type == "ingredientGuide"）
-  const query = `*[_type == "post" && category == "Ingredient Guide"] {
+  const query = `*[_type == "post"] {
     title,
     "slug": slug.current,  // スラッグで詳細ページリンク
     "mainImage": mainImage.asset->url,  // 画像URL（Canva AI生成想定）

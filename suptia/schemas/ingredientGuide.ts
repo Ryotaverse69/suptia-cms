@@ -38,6 +38,18 @@ export default defineType({
       description: '記事一覧などで表示される短い要約です。',
     }),
     defineField({
+      name: 'category',
+      title: 'カテゴリー',
+      type: 'string',
+      options: {
+        list: [
+          {title: '成分ガイド', value: 'ingredient-guide'},
+          {title: 'その他', value: 'other'},
+        ],
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'body',
       title: '本文 (Body)',
       type: 'blockContent',
