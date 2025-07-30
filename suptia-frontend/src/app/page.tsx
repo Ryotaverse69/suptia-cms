@@ -1,20 +1,23 @@
+
 // app/page.tsx (抜粋)
 import { client } from '../lib/sanity.client';  // クライアントインポート
 import Head from 'next/head';
 import Hero from '../components/home/Hero';
 
-// サーバーコンポーネントでデータフェッチ
-async function getArticles() {
-  const query = `*[_type == "post"] { 
-    title, 
-    slug, 
-    "mainImage": mainImage.asset->url  // 画像URL取得（Canva AI生成想定）
-  } | order(_createdAt desc) [0...5]`;  // 最新5件
+// 「Ingredient Guide」フォルダ内の記事を取得する関数
+async function getIngredientGuides() {
+  // スキーマに合わせて調整（例: _type == "ingredientGuide"）
+  const query = `*[_type == "post" && category == "Ingredient Guide"] {
+    title,
+    "slug": slug.current,  // スラッグで詳細ページリンク
+    "mainImage": mainImage.asset->url,  // 画像URL（Canva AI生成想定）
+    excerpt  // 抜粋フィールドがあれば
+  } | order(_createdAt desc) [0...10]`;  // 最新10件（調整可能）
   return await client.fetch(query);
 }
 
 export default async function Home() {
-  const articles = await getArticles();  // データ取得
+  const articles = await getIngredientGuides();  // データ取得
 
   return (
     <div className="min-h-screen bg-white text-black font-sans antialiased">
@@ -38,18 +41,23 @@ export default async function Home() {
 
       {/* 製品セクション: xAIのProducts風、成分ガイド */}
       <section id="guide" className="py-16 px-6 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl mb-8 text-center">成分ガイド</h2>
-          <ul className="list-none space-y-2 text-center">
-            {articles.map((article: any) => (
-              <li key={article.slug.current}>
-                <a href={`/articles/${article.slug.current}`} className="text-blue-500 hover:underline">
-                  {article.title}
-                </a>
-                {article.mainImage && <img src={article.mainImage} alt={article.title} className="w-20 h-20 mx-auto mt-2" />}
-              </li>
-            ))}
-          </ul>
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-3xl mb-8">成分ガイド (Ingredient Guide)</h2>
+          {articles.length === 0 ? (
+            <p>記事が見つかりません。Sanityで確認してください。</p>
+          ) : (
+            <ul className="list-none space-y-4">
+              {articles.map((article: any) => (
+                <li key={article.slug} className="border-b py-2">
+                  <a href={`/guides/${article.slug}`} className="text-blue-500 hover:underline text-lg">
+                    {article.title}
+                  </a>
+                  {article.excerpt && <p className="text-gray-600">{article.excerpt}</p>}
+                  {article.mainImage && <img src={article.mainImage} alt={article.title} className="w-32 h-32 mx-auto mt-2" />}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
 
