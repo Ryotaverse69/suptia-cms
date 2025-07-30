@@ -1,30 +1,20 @@
-'use client'; // クライアント指定（Framer Motion用）
-
-import { motion } from 'framer-motion';
+// app/page.tsx (抜粋)
+import { client } from '../lib/sanity.client';  // クライアントインポート
 import Head from 'next/head';
-import { useState } from 'react';
+import Hero from '../components/home/Hero';
 
-interface SearchResult {
-  nutrients: {
-    nf_vitamin_c?: number;
-  };
-  recommendation: string;
+// サーバーコンポーネントでデータフェッチ
+async function getArticles() {
+  const query = `*[_type == "post"] { 
+    title, 
+    slug, 
+    "mainImage": mainImage.asset->url  // 画像URL取得（Canva AI生成想定）
+  } | order(_createdAt desc) [0...5]`;  // 最新5件
+  return await client.fetch(query);
 }
 
-export default function Home() {
-  const [query, setQuery] = useState('');
-  const [result, setResult] = useState<SearchResult | null>(null);
-
-  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const res = await fetch('/api/recommend', { 
-      method: 'POST', 
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query })
-    });
-    const data = await res.json();
-    setResult(data); // 結果表示
-  };
+export default async function Home() {
+  const articles = await getArticles();  // データ取得
 
   return (
     <div className="min-h-screen bg-white text-black font-sans antialiased">
@@ -44,53 +34,22 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* ヒーロー: xAI風コンセプト/検索窓、白系背景 */}
-      <section className="h-screen flex flex-col justify-center items-center bg-gray-50 px-6 text-center">
-        <motion.h2
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-4xl md:text-6xl font-light mb-8"
-        >
-          誰もが自分にピッタリの安くて安全なサプリメントに出会える。
-        </motion.h2>
-        <form onSubmit={handleSearch} className="w-full max-w-md">
-          <input
-            type="text"
-            placeholder="サプリメントを検索（例: ビタミンC）"
-            className="w-full p-4 border border-gray-300 rounded-full focus:outline-none"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <motion.button
-            type="submit"
-            whileHover={{ scale: 1.05 }}
-            className="mt-4 px-8 py-3 bg-blue-500 text-white rounded-full"
-          >
-            検索
-          </motion.button>
-        </form>
-
-        {result && (
-          <div className="mt-8 p-4 bg-white border rounded-lg w-full max-w-md text-left">
-            <h3 className="font-bold">栄養データ: {result.nutrients?.nf_vitamin_c}mg ビタミンC</h3>
-            <p><span className="font-bold">AI提案:</span> {result.recommendation}</p>
-          </div>
-        )}
-      </section>
+      <Hero />
 
       {/* 製品セクション: xAIのProducts風、成分ガイド */}
       <section id="guide" className="py-16 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl mb-8">成分ガイド</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Sanityから動的取得想定 */}
-            <div className="p-6 border border-gray-200 rounded-lg">
-              <h3 className="text-xl">ビタミンC</h3>
-              <p className="text-gray-600">効果と選び方。</p>
-            </div>
-            {/* 追加カード */}
-          </div>
+          <h2 className="text-3xl mb-8 text-center">成分ガイド</h2>
+          <ul className="list-none space-y-2 text-center">
+            {articles.map((article: any) => (
+              <li key={article.slug.current}>
+                <a href={`/articles/${article.slug.current}`} className="text-blue-500 hover:underline">
+                  {article.title}
+                </a>
+                {article.mainImage && <img src={article.mainImage} alt={article.title} className="w-20 h-20 mx-auto mt-2" />}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
