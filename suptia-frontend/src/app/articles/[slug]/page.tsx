@@ -3,13 +3,13 @@ import { client } from '../../../lib/sanity.client';
 import { PortableText } from '@portabletext/react';  // 本文表示用（npm install @portabletext/react）
 
 export async function generateStaticParams() {
-  const query = `*[_type == "post"] { "slug": slug.current }`;
+  const query = `*[_type == "ingredientGuide"] { "slug": slug.current }`;
   const slugs = await client.fetch(query);
   return slugs.map((slug: any) => ({ slug: slug.slug }));
 }
 
 export default async function ArticlePage({ params }: { params: { slug: string } }) {
-  const query = `*[_type == "post" && slug.current == $slug][0] { title, body }`;
+  const query = `*[_type == "ingredientGuide" && slug.current == $slug][0] { title, body }`;
   const article = await client.fetch(query, { slug: params.slug });
 
   if (!article) return <div>記事が見つかりません</div>;
