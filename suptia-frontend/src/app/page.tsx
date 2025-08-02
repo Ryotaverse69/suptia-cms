@@ -7,11 +7,11 @@ import Hero from '../components/home/Hero';
 // 「Ingredient Guide」フォルダ内の記事を取得する関数
 async function getIngredientGuides() {
   // スキーマに合わせて調整（例: _type == "ingredientGuide"）
-  const query = `*[_type == "post"] {
+  const query = `*[_type == "ingredientGuide"] {
     title,
     "slug": slug.current,  // スラッグで詳細ページリンク
     "mainImage": mainImage.asset->url,  // 画像URL（Canva AI生成想定）
-    excerpt  // 抜粋フィールドがあれば
+    summary  // 抜粋フィールドがあれば
   } | order(_createdAt desc) [0...10]`;  // 最新10件（調整可能）
   return await client.fetch(query);
 }
@@ -52,7 +52,7 @@ export default async function Home() {
                   <a href={`/guides/${article.slug}`} className="text-blue-500 hover:underline text-lg">
                     {article.title}
                   </a>
-                  {article.excerpt && <p className="text-gray-600">{article.excerpt}</p>}
+                  {article.summary && <p className="text-gray-600">{article.summary}</p>}
                   {article.mainImage && <img src={article.mainImage} alt={article.title} className="w-32 h-32 mx-auto mt-2" />}
                 </li>
               ))}
