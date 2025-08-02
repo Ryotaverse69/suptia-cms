@@ -1,32 +1,56 @@
-// app/guides/[slug]/page.tsx
-import { client } from '../../../lib/sanity.client';
-import { PortableText } from '@portabletext/react';  // 本文表示用
+import { client } from '@/lib/sanity.client';
+import { PortableText } from '@portabletext/react';
+
+export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const query = `*[_type == "post" && category == "Ingredient Guide"] { "slug": slug.current }`;  // Ingredient Guideのみ
-  const slugs = await client.fetch(query);
-  return slugs.map((slug: any) => ({ slug: slug.slug }));
+  const query = `*[_type == "post" && defined(slug.current)]{ "slug": slug.current }`;
+  try {
+    return await client.fetch(query);
+  } catch (error) {
+    console.error('Static params error:', error);
+    return [];
+  }
 }
 
 export default async function GuidePage({ params }: { params: { slug: string } }) {
-  const query = `*[_type == "post" && slug.current == $slug && category == "Ingredient Guide"][0] {  // categoryフィルタ追加
-    title, 
-    body,  // 本文（PortableTextで表示）
+  const query = `*[_type == "post" && slug.current == $slug][0] {
+    title,
+    body,
+    category,
     "mainImage": mainImage.asset->url
   }`;
-  const article = await client.fetch(query, { slug: params.slug });
-
-  if (!article) {
-    return <div>記事が見つかりません。Ingredient Guideのカテゴリを確認してください。</div>;
-  }
-
-  return (
-    <div className="max-w-2xl mx-auto p-4 mt-20"> {/* mt-20を追加してヘッダーとの重なりを回避 */}
-      <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
-      {article.mainImage && <img src={article.mainImage} alt={article.title} className="w-full mb-4" />}
-      <div className="prose lg:prose-xl">
-        {article.body && <PortableText value={article.body} />}
+  try {
+    const article = await client.fetch(query, { slug: params.slug });
+    if (!article) {
+      return (
+        <div className="max-w-2xl mx-auto p-4">
+          <p>記事が見つかりません。Sanity Studioで以下の点を確認してください：</p>
+          <ul className="list-disc pl-5">
+            <li>スラッグ（{params.slug}）が存在するか</li>
+            <li>記事が「Publish」済みか</li>
+          </ul>
+        </div>
+      );
+    }
+    return (
+      <div className="max-w-2xl mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
+        <p className="text-gray-600 mb-4">カテゴリ: {article.category || '未設定'}</p>
+        {article.mainImage && <img src={article.mainImage} alt={article.title} className="w-full mb-4 rounded" />}
+        {article.body ? (
+          <PortableText value={article.body} />
+        ) : (
+          <p>本文がありません。Sanity Studioで「本文」フィールドに内容を入力し、公開してください。</p>
+        )}
       </div>
-    </div>
-  );
+    );
+  } catch (error: any) {
+    console.error('Sanity fetch error:', error);
+    return (
+      <div className="max-w-2xl mx-auto p-4">
+        <p>エラーが発生しました: {error.message}</p>
+      </div>
+    );
+  }
 }

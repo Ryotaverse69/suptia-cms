@@ -3,4 +3,6 @@
 import blockContent from './blockContent'
 import ingredientGuide from './ingredientGuide'
 
-export const schemaTypes = [ingredientGuide, blockContent]
+import post from './post.js'
+
+export const schemaTypes = [post, ingredientGuide, blockContent]

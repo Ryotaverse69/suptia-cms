@@ -18,6 +18,8 @@ async function ArticlePage({ params: { slug } }: Props) {
 
   const article = await client.fetch(query, { slug });
 
+  console.log(article);
+
   return (
     <article>
       <h1>{article.title}</h1>
