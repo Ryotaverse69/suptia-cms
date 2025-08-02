@@ -10,7 +10,7 @@ type Props = {
 
 async function ArticlePage({ params: { slug } }: Props) {
   const query = groq`
-    *[_type == 'post' && slug.current == $slug][0] {
+    *[_type == 'ingredientGuide' && slug.current == $slug][0] {
       ...,
       body
     }
