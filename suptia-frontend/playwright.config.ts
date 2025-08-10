@@ -8,7 +8,7 @@ export default defineConfig({
     headless: true,
   },
   webServer: {
-    command: 'NEXT_PUBLIC_E2E=1 next dev',
+    command: 'E2E=1 NEXT_PUBLIC_E2E=1 next dev',
     port: 3000,
     reuseExistingServer: false,
   },

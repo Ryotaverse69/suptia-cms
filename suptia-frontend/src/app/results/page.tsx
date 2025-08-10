@@ -35,7 +35,7 @@ async function getSampleProducts() {
 
 export default async function ResultsPage() {
   // E2E時は即時描画のモックを返す
-  if (process.env.NEXT_PUBLIC_E2E === '1') {
+  if (process.env.E2E === '1' || process.env.NEXT_PUBLIC_E2E === '1') {
     return (
       <main className="mx-auto max-w-6xl px-4 py-10 space-y-6" data-testid="results-root">
         <h1 className="text-2xl font-bold">おすすめ結果</h1>
