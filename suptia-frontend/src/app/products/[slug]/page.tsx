@@ -1,4 +1,5 @@
 import {sanityClient} from '@/data/sanityClient'
+import Image from 'next/image'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import {evaluateAlerts} from '@/lib/alerts'
 import {toMg, effectiveCostPerDay} from '@/lib/pricing'
@@ -79,9 +80,14 @@ export default async function ProductPage({params}: {params: {slug: string}}) {
     <main className="mx-auto max-w-5xl px-4 py-10 space-y-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(ldJson)}} />
 
-      <header>
-        <h1 className="text-2xl font-bold">{product.name}</h1>
-        <p className="text-gray-600">{product.brand}</p>
+      <header className="flex items-center gap-4">
+        <div className="relative h-16 w-16 overflow-hidden rounded bg-gray-100">
+          <Image src={product.urlAmazon || '/vercel.svg'} alt={product.name} fill priority sizes="64px" className="object-contain" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold">{product.name}</h1>
+          <p className="text-gray-600">{product.brand}</p>
+        </div>
       </header>
 
       <section>

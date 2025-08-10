@@ -2,7 +2,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import GSAPProvider from "@/components/GSAPProvider";
 import Script from 'next/script';
 
 const inter = Inter({ subsets: ["latin"] });
@@ -44,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={inter.className}>
-        <GSAPProvider>{children}</GSAPProvider>
+        {children}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=G-MVW9Q0XRBR`}
           strategy="afterInteractive"

@@ -58,20 +58,25 @@ export default async function ResultsPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {sorted.map((p: any) => (
             <Card key={p._id}>
-              <CardHeader>
+              <CardHeader className="sticky top-0 z-10 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60">
                 <CardTitle className="flex items-center justify-between">
-                  <span>{p.name}</span>
-                  <Badge>{p.brand}</Badge>
+                  <div className="flex flex-col">
+                    <span className="text-base font-semibold">{p.name}</span>
+                    <span className="text-xs text-gray-500">{p.brand}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">実効/日: {Number.isFinite(p.costPerDay) ? `¥${Math.round(p.costPerDay)}` : '-'}</span>
+                    {p.alerts.level !== 'GREEN' && (
+                      <Badge className={p.alerts.level === 'RED' ? 'border-red-600 text-red-700' : 'border-yellow-600 text-yellow-700'}>
+                        {p.alerts.level}
+                      </Badge>
+                    )}
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="flex items-center gap-2">
                   <span className="text-xl font-bold">総合 {Math.round(p.score)}</span>
-                  {p.alerts.level !== 'GREEN' && (
-                    <Badge className={p.alerts.level === 'RED' ? 'border-red-600 text-red-700' : 'border-yellow-600 text-yellow-700'}>
-                      {p.alerts.level}
-                    </Badge>
-                  )}
                 </div>
                 <div className="text-sm text-gray-600">実効コスト/日: {Number.isFinite(p.costPerDay) ? `¥${Math.round(p.costPerDay)}` : '-'} / 推奨理由: 安全性とコストのバランスが良好</div>
                 <div className="flex gap-2 text-sm">

@@ -24,6 +24,9 @@ export default function DiagnosisPage() {
     pregnancyOrLactation: false,
   })
 
+  const [step, setStep] = useState(1)
+  const total = 5
+
   const submit = async () => {
     const res = await fetch('/results', {
       method: 'POST',
@@ -35,6 +38,9 @@ export default function DiagnosisPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 space-y-8">
       <h1 className="text-2xl font-bold">かんたん診断</h1>
+      <div className="h-2 w-full overflow-hidden rounded bg-gray-200">
+        <div className="h-full bg-black" style={{width: `${Math.round((step/total)*100)}%`}} />
+      </div>
 
       <section>
         <h2 className="font-semibold mb-2">目的（複数選択可）</h2>
@@ -55,6 +61,7 @@ export default function DiagnosisPage() {
             </label>
           ))}
         </div>
+        <div className="mt-2 text-sm text-gray-600">暫定おすすめ: 目的「{form.goals[0] ?? '未選択'}」に基づく候補を先出し表示します。</div>
       </section>
 
       <section>
@@ -126,8 +133,12 @@ export default function DiagnosisPage() {
         </label>
       </section>
 
-      <div className="flex justify-end">
-        <button onClick={submit} className="rounded bg-black px-4 py-2 text-white">結果を見る</button>
+      <div className="flex items-center justify-between">
+        <button onClick={() => setStep((s)=> Math.max(1, s-1))} className="rounded border px-3 py-2">戻る</button>
+        <div className="flex gap-2">
+          <button onClick={() => setStep((s)=> Math.min(total, s+1))} className="rounded border px-3 py-2">次へ</button>
+          <button onClick={submit} className="rounded bg-black px-4 py-2 text-white">結果を見る</button>
+        </div>
       </div>
     </main>
   )

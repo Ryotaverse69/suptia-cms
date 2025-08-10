@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint --fix",
     "test": "vitest",
-    "yakuji:check": "ts-node ./scripts/claims-guard.ts"
+    "yakuji:check": "ts-node ./scripts/claims-guard.ts",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@gsap/react": "^2.1.1",
@@ -19,7 +20,8 @@
     "next-sanity": "^9.4.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "@next/bundle-analyzer": "^14.2.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -27,9 +27,6 @@ export function toMg(amount: number, unit: IngredientDose['unit']): number {
     case 'mcg':
       return amount / 1000
     default: {
-      // TypeScript の網羅性担保（実行時には来ない）
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const _exhaustiveCheck: never = unit
       return NaN
     }
   }
