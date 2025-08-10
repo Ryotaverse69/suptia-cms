@@ -1,44 +1,92 @@
-import { client } from '@/lib/sanity.client';
+import Link from 'next/link'
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
+import {Badge} from '@/components/ui/badge'
+import {sanityClient} from '@/data/sanityClient'
 
-async function getArticles() {
-  const query = `*[_type == "post" && defined(slug.current)] { title, slug, category }`;
+export const revalidate = 60
+
+async function getHomeSections() {
   try {
-    return await client.fetch(query);
-  } catch (error) {
-    console.error('Sanity fetch error:', error);
-    return [];
+    const cheap = await sanityClient.fetch(
+      `*[_type=='product']|order(priceJPY asc)[0...8]{name,brand,slug,priceJPY}`
+    )
+    const attention = await sanityClient.fetch(
+      `*[_type=='ingredient' && (count(contraindications)>0 || count(interactions)>0)][0...8]{name,slug}`
+    )
+    return {cheap, attention}
+  } catch (e) {
+    console.error(e)
+    return {cheap: [], attention: []}
   }
 }
 
-type Article = {
-  title: string;
-  slug: { current: string };
-  category: string;
-};
-
 export default async function Home() {
-  const articles: Article[] = await getArticles();
-  const ingredientGuides = articles.filter(article => article.category === 'Ingredient Guide');
+  const {cheap, attention} = await getHomeSections()
+
+  const ldJson = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Suptia',
+    url: 'https://example.com',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://example.com/search?q={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
   return (
-    <div className="min-h-screen bg-white text-black flex flex-col items-center justify-center px-4">
-      <h1 className="text-4xl font-bold">サプティア (SUPTIA)</h1>
-      <p className="text-xl my-8">誰もが自分にピッタリの安くて安全なサプリメントに出会える。</p>
-      <section className="mt-12 text-center">
-        <h2 className="text-2xl mb-4">Ingredient Guide</h2>
-        {ingredientGuides.length === 0 ? (
-          <p>記事がありません。Sanity Studioで「Ingredient Guide」カテゴリを設定し、公開してください。</p>
-        ) : (
-          <ul className="list-none space-y-2">
-            {ingredientGuides.map((article) => (
-              <li key={article.slug.current}>
-                <a href={`/guides/${article.slug.current}`} className="text-blue-500 hover:underline">
-                  {article.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
+    <main className="mx-auto max-w-6xl px-4 py-10 space-y-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(ldJson)}} />
+
+      <section className="text-center space-y-4">
+        <h1 className="text-3xl font-bold">あなたに合うサプリを、科学的に。</h1>
+        <p className="text-gray-600">目的と体質に合わせて、最適な製品をやさしく提案します。</p>
+        <div className="flex justify-center gap-3">
+          <Link href="/diagnosis" className="rounded bg-black px-4 py-2 text-white">診断をはじめる</Link>
+          <Link href="/search" className="rounded border px-4 py-2">製品をさがす</Link>
+        </div>
       </section>
-    </div>
-  );
+
+      <section>
+        <h2 className="mb-3 text-xl font-semibold">いま安い</h2>
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {cheap.length === 0 ? (
+            <p className="text-gray-500">表示できる情報がありません。</p>
+          ) : (
+            cheap.map((p: any) => (
+              <Card key={p.slug.current}>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>{p.name}</span>
+                    <Badge>{p.brand}</Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex items-center justify-between">
+                  <span className="text-lg font-bold">¥{p.priceJPY?.toLocaleString?.() ?? '-'}</span>
+                  <Link href={`/products/${p.slug.current}`} className="text-sm underline">詳細</Link>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="mb-3 text-xl font-semibold">注意が必要な成分</h2>
+        <div className="flex flex-wrap gap-2">
+          {attention.length === 0 ? (
+            <p className="text-gray-500">表示できる情報がありません。</p>
+          ) : (
+            attention.map((i: any) => (
+              <Badge key={i.slug.current}>{i.name}</Badge>
+            ))
+          )}
+        </div>
+      </section>
+    </main>
+  )
 }
