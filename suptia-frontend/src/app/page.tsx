@@ -1,11 +1,12 @@
+'use client'
+
 import Link from 'next/link'
 import Script from 'next/script'
 import {track} from '@/lib/ga'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import {sanityClient} from '@/data/sanityClient'
-
-export const revalidate = 60
+import {useEffect, useState} from 'react'
 
 async function getHomeSections() {
   try {
@@ -22,8 +23,12 @@ async function getHomeSections() {
   }
 }
 
-export default async function Home() {
-  const {cheap, attention} = await getHomeSections()
+export default function Home() {
+  const [data, setData] = useState<{cheap: any[], attention: any[]}>({cheap: [], attention: []})
+
+  useEffect(() => {
+    getHomeSections().then(setData)
+  }, [])
 
   const ldJson = {
     '@context': 'https://schema.org',
@@ -56,10 +61,10 @@ export default async function Home() {
       <section>
         <h2 className="mb-3 text-xl font-semibold">いま安い</h2>
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {cheap.length === 0 ? (
+          {data.cheap.length === 0 ? (
             <p className="text-gray-500">表示できる情報がありません。</p>
           ) : (
-            cheap.map((p: any) => (
+            data.cheap.map((p: any) => (
               <Card key={p.slug.current}>
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
@@ -80,10 +85,10 @@ export default async function Home() {
       <section>
         <h2 className="mb-3 text-xl font-semibold">注意が必要な成分</h2>
         <div className="flex flex-wrap gap-2">
-          {attention.length === 0 ? (
+          {data.attention.length === 0 ? (
             <p className="text-gray-500">表示できる情報がありません。</p>
           ) : (
-            attention.map((i: any) => (
+            data.attention.map((i: any) => (
               <Badge key={i.slug.current}>{i.name}</Badge>
             ))
           )}
