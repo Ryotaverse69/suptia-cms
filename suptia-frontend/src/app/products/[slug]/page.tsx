@@ -4,6 +4,7 @@ import Script from 'next/script'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import {evaluateAlerts} from '@/lib/alerts'
 import {toMg, effectiveCostPerDay} from '@/lib/pricing'
+import {track} from '@/lib/ga'
 
 export const revalidate = 60
 
@@ -46,6 +47,9 @@ export default async function ProductPage({params}: {params: {slug: string}}) {
       </div>
     )
   }
+
+  // GA: 商品詳細表示
+  track('product_detail_view', {slug: params.slug, brand: product.brand, name: product.name, priceJPY: product.priceJPY ?? null})
 
   const persona = {sensitivityTags: [], medicationTags: [], pregnancyOrLactation: false}
   const alerts = evaluateAlerts(
@@ -159,6 +163,30 @@ export default async function ProductPage({params}: {params: {slug: string}}) {
           <CardHeader><CardTitle>価格履歴</CardTitle></CardHeader>
           <CardContent>
             <p className="text-gray-500">準備中（ダミー）</p>
+            <div className="mt-2 flex gap-2">
+              {product.urlAmazon && (
+                <a
+                  href={product.urlAmazon}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-blue-600"
+                  onClick={() => track('external_clickout', {destination: 'amazon', productSlug: params.slug, url: product.urlAmazon})}
+                >
+                  Amazonで見る
+                </a>
+              )}
+              {product.urlRakuten && (
+                <a
+                  href={product.urlRakuten}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-blue-600"
+                  onClick={() => track('external_clickout', {destination: 'rakuten', productSlug: params.slug, url: product.urlRakuten})}
+                >
+                  楽天で見る
+                </a>
+              )}
+            </div>
           </CardContent>
         </Card>
       </section>

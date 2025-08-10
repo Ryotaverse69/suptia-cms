@@ -3,6 +3,7 @@ import {medianCostJPYPerDay, scoreProduct} from '@/lib/pricing'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import {sanityClient} from '@/data/sanityClient'
+import {track} from '@/lib/ga'
 
 export const revalidate = 60
 
@@ -92,6 +93,10 @@ export default async function ResultsPage() {
   })
 
   const sorted = scored.sort((a: any, b: any) => b.score - a.score)
+  if (sorted.length > 0) {
+    // 推奨結果の表示イベント
+    track('recommendation_shown', {productCount: sorted.length})
+  }
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 space-y-6" data-testid="results-root">

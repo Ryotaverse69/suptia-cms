@@ -1,6 +1,7 @@
 "use client"
 import {useState} from 'react'
 import {useRouter} from 'next/navigation'
+import {track} from '@/lib/ga'
 
 type FormState = {
   goals: string[]
@@ -41,6 +42,7 @@ export default function DiagnosisPage() {
     } catch (e) {
       console.warn('POST /results error, navigating anyway')
     } finally {
+      track('diagnosis_completed', {goalsCount: form.goals.length, budgetJPY: form.budgetJPY, pregnancyOrLactation: form.pregnancyOrLactation})
       router.push('/results')
     }
   }

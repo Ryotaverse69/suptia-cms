@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Script from 'next/script'
+import {track} from '@/lib/ga'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import {sanityClient} from '@/data/sanityClient'
@@ -48,7 +49,7 @@ export default async function Home() {
         <p className="text-gray-600">目的と体質に合わせて、最適な製品をやさしく提案します。</p>
         <div className="flex justify-center gap-3">
           <Link href="/diagnosis" className="rounded bg-black px-4 py-2 text-white">診断をはじめる</Link>
-          <Link href="/search" className="rounded border px-4 py-2">製品をさがす</Link>
+          <Link href="/search" className="rounded border px-4 py-2" onClick={() => track('search_performed', {query: null})}>製品をさがす</Link>
         </div>
       </section>
 
