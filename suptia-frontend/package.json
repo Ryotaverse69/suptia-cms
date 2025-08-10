@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --fix"
+    "lint": "next lint --fix",
+    "test": "vitest",
+    "yakuji:check": "ts-node ./scripts/claims-guard.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.1",
@@ -27,6 +29,8 @@
     "@types/react-dom": "18.3.0",
     "eslint": "^8.0.0",
     "eslint-config-next": "14.2.5",
-    "typescript": "^5"
+    "typescript": "^5",
+    "ts-node": "^10.9.2",
+    "vitest": "^2.0.5"
   }
 }
