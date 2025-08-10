@@ -8,6 +8,21 @@ export const revalidate = 60
 
 async function getSampleProducts() {
   try {
+    if (process.env.NEXT_PUBLIC_E2E === '1') {
+      return [
+        {
+          _id: 'e2e-mock',
+          brand: 'MockBrand',
+          name: 'Mock Product',
+          slug: {current: 'mock-product'},
+          priceJPY: 1200,
+          servingsPerContainer: 12,
+          ingredients: [
+            {amount: 250, unit: 'mg', ingredientRef: {slug: {current: 'vitamin-c'}}},
+          ],
+        },
+      ]
+    }
     return await sanityClient.fetch(`*[_type=='product'][0...12]{
       _id, brand, name, slug, priceJPY, servingsPerContainer,
       ingredients[]{amount, unit, ingredientRef->{slug}}

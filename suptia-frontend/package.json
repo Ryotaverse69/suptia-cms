@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint --fix",
     "test": "vitest",
+    "test:e2e": "playwright test",
     "yakuji:check": "ts-node ./scripts/claims-guard.ts",
     "analyze": "ANALYZE=true next build"
   },
@@ -33,6 +34,7 @@
     "eslint-config-next": "14.2.5",
     "typescript": "^5",
     "ts-node": "^10.9.2",
-    "vitest": "^2.0.5"
+    "vitest": "^2.0.5",
+    "@playwright/test": "^1.47.2"
   }
 }
