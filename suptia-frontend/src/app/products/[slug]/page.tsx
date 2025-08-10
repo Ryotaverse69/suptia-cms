@@ -1,5 +1,6 @@
 import {sanityClient} from '@/data/sanityClient'
 import Image from 'next/image'
+import Script from 'next/script'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import {evaluateAlerts} from '@/lib/alerts'
 import {toMg, effectiveCostPerDay} from '@/lib/pricing'
@@ -78,7 +79,7 @@ export default async function ProductPage({params}: {params: {slug: string}}) {
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 space-y-8">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(ldJson)}} />
+      <Script id="ld-product" type="application/ld+json" strategy="afterInteractive">{JSON.stringify(ldJson)}</Script>
 
       <header className="flex items-center gap-4">
         <div className="relative h-16 w-16 overflow-hidden rounded bg-gray-100">

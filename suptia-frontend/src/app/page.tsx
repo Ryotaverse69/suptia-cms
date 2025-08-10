@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Script from 'next/script'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import {sanityClient} from '@/data/sanityClient'
@@ -27,12 +28,12 @@ export default async function Home() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Suptia',
-    url: 'https://example.com',
+    url: 'https://suptia.com',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://example.com/search?q={search_term_string}',
+        urlTemplate: 'https://suptia.com/search?q={search_term_string}',
       },
       'query-input': 'required name=search_term_string',
     },
@@ -40,7 +41,7 @@ export default async function Home() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 space-y-12">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(ldJson)}} />
+      <Script id="ld-website" type="application/ld+json" strategy="afterInteractive">{JSON.stringify(ldJson)}</Script>
 
       <section className="text-center space-y-4">
         <h1 className="text-3xl font-bold">あなたに合うサプリを、科学的に。</h1>
