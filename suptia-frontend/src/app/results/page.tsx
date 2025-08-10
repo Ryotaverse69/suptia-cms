@@ -34,6 +34,35 @@ async function getSampleProducts() {
 }
 
 export default async function ResultsPage() {
+  // E2E時は即時描画のモックを返す
+  if (process.env.NEXT_PUBLIC_E2E === '1') {
+    return (
+      <main className="mx-auto max-w-6xl px-4 py-10 space-y-6" data-testid="results-root">
+        <h1 className="text-2xl font-bold">おすすめ結果</h1>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Card data-testid="result-card">
+            <CardHeader className="sticky top-0 z-10 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-base font-semibold">Mock Product</span>
+                  <span className="text-xs text-gray-500">MockBrand</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">実効/日: ¥100</span>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-bold">総合 80</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    )
+  }
+
   // NOTE: 実装簡略化のため、直前POSTの保存は省略（実際はserver actionで一時保存）
   const products = await getSampleProducts()
   const median = medianCostJPYPerDay(
