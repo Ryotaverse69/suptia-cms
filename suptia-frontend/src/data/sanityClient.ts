@@ -7,8 +7,7 @@ export const sanityClient = createClient({
   useCdn: true,
   perspective: 'published',
   stega: {enabled: false},
-  // Next.js App Router ISR
-  fetch: (input, init) => fetch(input, {...init, next: {revalidate: 60}}),
+  // Next.js App Router ISR は fetch 呼び出し側で next: { revalidate } を指定する
 })
 
 export type SanityImage = {
