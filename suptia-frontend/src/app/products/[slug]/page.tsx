@@ -194,4 +194,76 @@ export default async function ProductPage({params}: {params: {slug: string}}) {
   )
 }
 
+import {sanityClient} from '@/data/sanityClient'
+import Image from 'next/image'
+import Script from 'next/script'
 
+export const revalidate = 60
+
+export async function generateStaticParams() {
+  try {
+    const slugs = await sanityClient.fetch<{slug: {current: string}}[]>(
+      `*[_type=='product' && defined(slug.current)]{slug}`
+    )
+    return slugs.map((s) => ({slug: s.slug.current}))
+  } catch (e) {
+    console.error(e)
+    return []
+  }
+}
+
+async function getProduct(slug: string) {
+  try {
+    return await sanityClient.fetch(
+      `*[_type=='product' && slug.current==$slug][0]{
+        name, brand, priceJPY, slug
+      }`,
+      {slug}
+    )
+  } catch (e) {
+    console.error(e)
+    return null
+  }
+}
+
+export default async function ProductPage({params}: {params: {slug: string}}) {
+  const product = await getProduct(params.slug)
+  if (!product) {
+    return (
+      <div className="mx-auto max-w-6xl px-4 py-10">
+        <p className="text-gray-500">商品が見つかりませんでした。</p>
+      </div>
+    )
+  }
+
+  const ldJson = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    brand: product.brand,
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'JPY',
+      price: product.priceJPY ?? undefined,
+      availability: 'https://schema.org/InStock',
+    },
+  }
+
+  return (
+    <main className="mx-auto max-w-5xl px-4 py-10 space-y-6">
+      <Script id="ld-product" type="application/ld+json" strategy="afterInteractive">{JSON.stringify(ldJson)}</Script>
+
+      <header className="flex items-center gap-4">
+        <Image src="/ogp.png" alt={product.name} width={64} height={64} priority />
+        <div>
+          <h1 className="text-2xl font-bold">{product.name}</h1>
+          {product.brand && <p className="text-gray-600">{product.brand}</p>}
+        </div>
+      </header>
+
+      <section>
+        <p className="text-lg">価格: <span className="font-semibold">{product.priceJPY != null ? `¥${product.priceJPY.toLocaleString?.()}` : '-'}</span></p>
+      </section>
+    </main>
+  )
+}

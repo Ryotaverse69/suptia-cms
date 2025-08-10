@@ -56,6 +56,7 @@ export default defineType({
               title: 'Ingredient',
               type: 'reference',
               to: [{type: 'ingredient'}],
+              description: '参照する成分',
               validation: (Rule) => Rule.required(),
             }),
             defineField({
@@ -69,6 +70,7 @@ export default defineType({
               name: 'unit',
               title: 'Unit',
               type: 'string',
+              description: 'mg, g, µg, IU, mL など',
               options: {
                 list: [
                   {title: 'mg', value: 'mg'},
@@ -120,12 +122,14 @@ export default defineType({
       title: 'Rakuten URL',
       type: 'url',
       description: '楽天の商品ページURL',
+      validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
     }),
     defineField({
       name: 'urlAmazon',
       title: 'Amazon URL',
       type: 'url',
       description: 'Amazonの商品ページURL',
+      validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
     }),
     defineField({
       name: 'lastCheckedAt',
@@ -145,5 +149,4 @@ export default defineType({
     },
   },
 })
-
 

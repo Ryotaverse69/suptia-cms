@@ -9,11 +9,12 @@ export default defineType({
       name: 'weights',
       title: 'Weights',
       type: 'object',
+      description: 'ランキングに用いる各要素の重み（合計=1）',
       fields: [
-        defineField({name: 'evidence', title: 'Evidence', type: 'number', validation: (Rule) => Rule.required().min(0).max(1)}),
-        defineField({name: 'safety', title: 'Safety', type: 'number', validation: (Rule) => Rule.required().min(0).max(1)}),
-        defineField({name: 'cost', title: 'Cost', type: 'number', validation: (Rule) => Rule.required().min(0).max(1)}),
-        defineField({name: 'practicality', title: 'Practicality', type: 'number', validation: (Rule) => Rule.required().min(0).max(1)}),
+        defineField({name: 'evidence', title: 'Evidence', type: 'number', description: 'エビデンスの重み', validation: (Rule) => Rule.required().min(0).max(1)}),
+        defineField({name: 'safety', title: 'Safety', type: 'number', description: '安全性の重み', validation: (Rule) => Rule.required().min(0).max(1)}),
+        defineField({name: 'cost', title: 'Cost', type: 'number', description: '価格の重み', validation: (Rule) => Rule.required().min(0).max(1)}),
+        defineField({name: 'practicality', title: 'Practicality', type: 'number', description: '実用性の重み', validation: (Rule) => Rule.required().min(0).max(1)}),
       ],
       validation: (Rule) =>
         Rule.custom((w) => {
@@ -33,8 +34,8 @@ export default defineType({
         {
           type: 'object',
           fields: [
-            defineField({name: 'tag', title: 'Tag', type: 'string'}),
-            defineField({name: 'action', title: 'Action', type: 'string', options: {list: [
+            defineField({name: 'tag', title: 'Tag', type: 'string', description: '対象タグ'}),
+            defineField({name: 'action', title: 'Action', type: 'string', description: '適用アクション', options: {list: [
               {title: 'Exclude', value: 'exclude'},
               {title: 'Penalize', value: 'penalize'},
             ]}}),
@@ -51,8 +52,8 @@ export default defineType({
         {
           type: 'object',
           fields: [
-            defineField({name: 'tag', title: 'Tag', type: 'string'}),
-            defineField({name: 'action', title: 'Action', type: 'string', options: {list: [
+            defineField({name: 'tag', title: 'Tag', type: 'string', description: '対象タグ'}),
+            defineField({name: 'action', title: 'Action', type: 'string', description: '適用アクション', options: {list: [
               {title: 'Exclude', value: 'exclude'},
               {title: 'Penalize', value: 'penalize'},
             ]}}),
@@ -65,6 +66,7 @@ export default defineType({
       name: 'rankingTieBreak',
       title: 'Ranking Tie Break',
       type: 'string',
+      description: '同点時の優先基準',
       options: {list: [
         {title: 'Price', value: 'price'},
         {title: 'Evidence', value: 'evidence'},
@@ -73,5 +75,4 @@ export default defineType({
     }),
   ],
 })
-
 

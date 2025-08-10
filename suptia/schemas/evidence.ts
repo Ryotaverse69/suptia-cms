@@ -10,6 +10,7 @@ export default defineType({
       title: 'Ingredient',
       type: 'reference',
       to: [{type: 'ingredient'}],
+      description: '対象となる成分参照',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -32,6 +33,7 @@ export default defineType({
       name: 'n',
       title: 'Sample Size (n)',
       type: 'number',
+      description: 'サンプルサイズ（被験者数）',
       validation: (Rule) => Rule.min(0),
     }),
     defineField({
@@ -53,10 +55,33 @@ export default defineType({
       title: 'Citation',
       type: 'object',
       fields: [
-        defineField({name: 'title', title: 'Title', type: 'string', validation: (Rule) => Rule.required()}),
-        defineField({name: 'doi', title: 'DOI', type: 'string'}),
-        defineField({name: 'url', title: 'URL', type: 'url'}),
-        defineField({name: 'year', title: 'Year', type: 'number', validation: (Rule) => Rule.min(1900).max(2100)}),
+        defineField({
+          name: 'title',
+          title: 'Title',
+          type: 'string',
+          description: '論文タイトル',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'doi',
+          title: 'DOI',
+          type: 'string',
+          description: 'Digital Object Identifier',
+        }),
+        defineField({
+          name: 'url',
+          title: 'URL',
+          type: 'url',
+          description: '論文またはソースのURL',
+          validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
+        }),
+        defineField({
+          name: 'year',
+          title: 'Year',
+          type: 'number',
+          description: '出版年',
+          validation: (Rule) => Rule.min(1900).max(2100),
+        }),
       ],
       validation: (Rule) => Rule.required(),
     }),
@@ -72,5 +97,4 @@ export default defineType({
     select: {title: 'citation.title', subtitle: 'studyType'},
   },
 })
-
 

@@ -42,8 +42,8 @@ export default defineType({
       type: 'boolean',
       description: '妊娠中・授乳中かどうか',
       initialValue: false,
+      validation: (Rule) => Rule.custom(() => true),
     }),
   ],
 })
-
 

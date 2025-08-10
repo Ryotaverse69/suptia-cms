@@ -71,12 +71,14 @@ export default defineType({
           name: 'min',
           title: 'Min',
           type: 'number',
+          description: '推奨最小量',
           validation: (Rule) => Rule.min(0),
         }),
         defineField({
           name: 'max',
           title: 'Max',
           type: 'number',
+          description: '推奨最大量',
           validation: (Rule) => Rule.min(0),
         }),
         defineField({
@@ -135,5 +137,4 @@ export default defineType({
     select: {title: 'name', subtitle: 'category'},
   },
 })
-
 
