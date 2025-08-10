@@ -1,4 +1,5 @@
 import {sanityClient} from './sanityClient'
+import {Result, Ok, Err} from '@/lib/result'
 
 export type Ingredient = {
   _id: string
@@ -26,20 +27,19 @@ export type Guide = {
   mainImage?: {asset?: {url?: string}}
 }
 
-export async function getIngredientBySlug(slug: string): Promise<Ingredient | null> {
+export async function getIngredientBySlug(slug: string): Promise<Result<Ingredient | null, Error>> {
   const query = `*[_type == "ingredient" && slug.current == $slug][0]{
     _id, name, slug, category, evidenceLevel
   }`
   try {
     const res = await sanityClient.fetch<Ingredient | null>(query, {slug})
-    return res ?? null
+    return Ok(res ?? null)
   } catch (e) {
-    console.error('getIngredientBySlug error', e)
-    return null
+    return Err(e as Error)
   }
 }
 
-export async function getProductBySlug(slug: string): Promise<Product | null> {
+export async function getProductBySlug(slug: string): Promise<Result<Product | null, Error>> {
   const query = `*[_type == "product" && slug.current == $slug][0]{
     _id, brand, name, slug, priceJPY, servingsPerContainer,
     ingredients[]{
@@ -49,14 +49,13 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   }`
   try {
     const res = await sanityClient.fetch<Product | null>(query, {slug})
-    return res ?? null
+    return Ok(res ?? null)
   } catch (e) {
-    console.error('getProductBySlug error', e)
-    return null
+    return Err(e as Error)
   }
 }
 
-export async function getProductsByIngredient(ingredientSlug: string): Promise<Product[]> {
+export async function getProductsByIngredient(ingredientSlug: string): Promise<Result<Product[], Error>> {
   const query = `*[_type == "product" && count(ingredients[ingredientRef->slug.current == $slug]) > 0]{
     _id, brand, name, slug, priceJPY, servingsPerContainer,
     ingredients[]{
@@ -66,23 +65,21 @@ export async function getProductsByIngredient(ingredientSlug: string): Promise<P
   }`
   try {
     const res = await sanityClient.fetch<Product[]>(query, {slug: ingredientSlug})
-    return Array.isArray(res) ? res : []
+    return Ok(Array.isArray(res) ? res : [])
   } catch (e) {
-    console.error('getProductsByIngredient error', e)
-    return []
+    return Err(e as Error)
   }
 }
 
-export async function getLatestGuides(limit = 12): Promise<Guide[]> {
+export async function getLatestGuides(limit = 12): Promise<Result<Guide[], Error>> {
   const query = `*[_type == "ingredientGuide"] | order(_createdAt desc) [0...$limit]{
     _id, title, slug, summary, mainImage
   }`
   try {
     const res = await sanityClient.fetch<Guide[]>(query, {limit})
-    return Array.isArray(res) ? res : []
+    return Ok(Array.isArray(res) ? res : [])
   } catch (e) {
-    console.error('getLatestGuides error', e)
-    return []
+    return Err(e as Error)
   }
 }
 
