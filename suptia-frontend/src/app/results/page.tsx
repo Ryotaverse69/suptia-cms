@@ -65,14 +65,14 @@ export default async function ResultsPage() {
   const sorted = scored.sort((a: any, b: any) => b.score - a.score)
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10 space-y-6">
+    <main className="mx-auto max-w-6xl px-4 py-10 space-y-6" data-testid="results-root">
       <h1 className="text-2xl font-bold">おすすめ結果</h1>
       {sorted.length === 0 ? (
         <p className="text-gray-500">条件に合う製品が見つかりませんでした。</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {sorted.map((p: any) => (
-            <Card key={p._id}>
+            <Card key={p._id} data-testid="result-card">
               <CardHeader className="sticky top-0 z-10 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60">
                 <CardTitle className="flex items-center justify-between">
                   <div className="flex flex-col">

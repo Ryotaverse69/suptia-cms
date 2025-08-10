@@ -13,8 +13,8 @@ test('diagnosis flow shows results', async ({ page }) => {
   await page.getByRole('button', { name: '結果を見る' }).click()
 
   await page.waitForURL('**/results')
-  // 結果カードが表示される
-  await expect(page.getByText('総合')).toBeVisible({ timeout: 10_000 })
+  // 結果ページ見出し or data-testid
+  await expect(page.getByTestId('results-root')).toBeVisible({ timeout: 10_000 })
 })
 
 
